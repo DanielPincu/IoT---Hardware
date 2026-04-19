@@ -4,21 +4,20 @@
 
 OneWire oneWire(3);
 DallasTemperature sensors(&oneWire);
-
 WiFiSSLClient client;
 
 void setup() {
-  Serial.begin(9600);
 
   pinMode(2, OUTPUT);
   digitalWrite(2, HIGH);
 
   sensors.begin();
-
   WiFi.begin("S25","TryAgain");
+
 }
 
 void loop() {
+  
   sensors.requestTemperatures();
   int t = sensors.getTempCByIndex(0);
 

@@ -1,36 +1,33 @@
 #include <WiFiNINA.h>
+#include <WebSocketsClient.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
 OneWire oneWire(3);
 DallasTemperature sensors(&oneWire);
-WiFiSSLClient client;
+WebSocketsClient ws;
 
 void setup() {
-
   pinMode(2, OUTPUT);
   digitalWrite(2, HIGH);
 
   sensors.begin();
+
   WiFi.begin("S25","TryAgain");
 
+  ws.beginSSL("iot-server-yp8e.onrender.com", 443, "/");
 }
 
 void loop() {
-  
+  ws.loop();
+
+  if (!ws.isConnected()) return;
+
   sensors.requestTemperatures();
   int t = sensors.getTempCByIndex(0);
 
-  if (client.connect("iot-server-yp8e.onrender.com", 443)) {
-
-    client.print("GET ");
-    client.print("/");
-    client.print(t);
-    client.println(" HTTP/1.1");
-    client.println("Host: iot-server-yp8e.onrender.com");
-    client.println();
-    
-  } 
+  String msg = String(t);
+  ws.sendTXT(msg);
 
   delay(1000);
 }

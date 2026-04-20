@@ -23,7 +23,8 @@ void loop() {
 
   if (client.connect("iot-server-yp8e.onrender.com", 443)) {
 
-    client.print("GET /");
+    client.print("GET ");
+    client.print("/");
     client.print(t);
     client.println(" HTTP/1.1");
     client.println("Host: iot-server-yp8e.onrender.com");
